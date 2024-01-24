@@ -17,6 +17,7 @@ mod services {
 struct RecoveryPasswordData {
     username: String,
     url: String,
+    email: String
 }
 
 #[post("/recovery-password", data = "<recovery_password_data>")]
@@ -24,16 +25,18 @@ fn recovery_password(recovery_password_data: Json<RecoveryPasswordData>) -> Stri
     let smtp_transport = services::email_service::start_email_service();
     let username = &recovery_password_data.username;
     let url = &recovery_password_data.url;
+    let email = &recovery_password_data.email;
+
     let template = templates::helpers::generate_recovery_template::generate_recovery_html(username.as_str(), url.as_str());
-    match services::email_service::send_email(smtp_transport, template) {
-        Ok(_) => format!("Correo electrónico enviado correctamente."),
-        Err(e) => format!("Error al enviar el correo electrónico: {}", e),
+    match services::email_service::send_email(smtp_transport, template, email.to_string()) {
+        Ok(_) => format!("Email send correctly."),
+        Err(e) => format!("Error on send email: {}", e),
     }
 }
 
 #[get("/")]
 fn hello() -> &'static str {
-    "Hello, world!"
+    "Server running 🐱 - 📬 - 🦀!"
 }
 
 #[launch]
