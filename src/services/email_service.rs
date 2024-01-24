@@ -22,12 +22,12 @@ pub fn start_email_service() -> SmtpTransport {
     smtp_transport
 }
 
-pub fn send_email(smtp_transport: SmtpTransport, template: String) ->  Result<lettre::transport::smtp::response::Response, lettre::transport::smtp::Error> {
+pub fn send_email(smtp_transport: SmtpTransport, template: String, email: String) ->  Result<lettre::transport::smtp::response::Response, lettre::transport::smtp::Error> {
     dotenv().ok();
 
     // Configuración del correo electrónico
     let from_address = env::var("FROM_ADDRESS").unwrap_or_else(|_| "your_email@example.com".to_string());
-    let to_address = env::var("TO_ADDRESS").unwrap_or_else(|_| "recipient@example.com".to_string());
+    let to_address = email;
     
     // Parse email addresses and panic if parsing fails
     let to_mailbox: Mailbox = to_address.parse().expect("Failed to parse TO_ADDRESS");
